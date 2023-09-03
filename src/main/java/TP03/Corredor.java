@@ -30,7 +30,7 @@ public class Corredor extends Thread {
     }
 
     public void run() {
-        for(i) 100) {
+        for (int i = 0; i < 10; i++) {
             avanzar();
             System.out.println(getName() + " recorrio:" + this.distanciaRecorrida + " PASOS");
             try {
@@ -59,7 +59,7 @@ public class Corredor extends Thread {
             System.out.println("CORREDOR INTERRUMPIDO");
         }
         System.out.println("CARRERA FINALIZADA");
-        
+
     }
 
 }
