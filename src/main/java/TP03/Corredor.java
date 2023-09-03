@@ -29,6 +29,10 @@ public class Corredor extends Thread {
         this.distanciaRecorrida += avance;
     }
 
+    public int getDistancia() {
+        return this.distanciaRecorrida;
+    }
+
     public void run() {
         for (int i = 0; i < 10; i++) {
             avanzar();
@@ -58,7 +62,14 @@ public class Corredor extends Thread {
         } catch (InterruptedException ex) {
             System.out.println("CORREDOR INTERRUMPIDO");
         }
+        Corredor mayor = corredores[0];
+        for (Corredor c : corredores) {
+            if (c.distanciaRecorrida > mayor.distanciaRecorrida) {
+                mayor = c;
+            }
+        }
         System.out.println("CARRERA FINALIZADA");
+        System.out.println("EL CORREDOR QUE HIZO LA MAYOR DISTANCIA ES: "+mayor.getName());
 
     }
 
