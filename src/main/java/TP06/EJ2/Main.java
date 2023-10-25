@@ -4,10 +4,18 @@
  */
 package TP06.EJ2;
 
+import java.util.Random;
+
 /**
  *
  * @author jesus
  */
-public class Mesa {
-    
+public class Main {
+
+    public static void main(String[] args) {
+        Random n = new Random();
+        while (true) {
+            System.out.println("Numeros entre " + n.nextInt(2));
+        }
+    }
 }
