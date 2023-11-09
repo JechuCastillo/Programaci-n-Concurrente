@@ -20,18 +20,10 @@ public class Cocinero implements Runnable {
     }
 
     public void run() {
-        this.mesa.tomarPedidoCocinero();
-        cocinar();
-        this.mesa.entregarPedido();
+//        this.mesa.tomarPedidoComida();
+//        cocinar();
+//        this.mesa.entregarComida();
     }
 
-    public void cocinar() {
-        try {
-            System.out.println("El cocinero cocina");
-            Thread.sleep(3000);
-
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Cocinero.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    
 }

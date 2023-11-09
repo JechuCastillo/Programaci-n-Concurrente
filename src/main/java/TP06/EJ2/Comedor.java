@@ -14,60 +14,63 @@ import java.util.logging.Logger;
  */
 public class Comedor {
 
-    private Semaphore cocinero;
+    private Semaphore asientos;
+    private Semaphore beber;
+    private Semaphore comer;
+    private Semaphore pedidoBebida;
+    private Semaphore pedirComida;
     private Semaphore mozo;
-    private Semaphore mesa;
-    private Semaphore pedido;
 
     public Comedor() {
-        this.mesa = new Semaphore(2);
-        this.mozo = new Semaphore(0);
-        this.cocinero = new Semaphore(0);
-        this.pedido = new Semaphore(1);
+        this.asientos = new Semaphore(2);
+        this.mozo = new Semaphore(1);
+        this.beber = new Semaphore(0);
+        this.pedidoBebida= new Semaphore(0);
     }
 
     public void sentarse() {
         try {
-            this.mesa.acquire();
+            this.asientos.acquire();
         } catch (InterruptedException ex) {
+            Logger.getLogger(Comedor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void pedirBebida() {
+    public void pedirBebida(String n) {
         try {
-            System.out.println("Solicitando bebida");
-            this.mozo.release();
+            this.mozo.acquire();
+            System.out.println(n + "Llama al mozo y pide su bebida");
+            pedidoBebida.release();
         } catch (InterruptedException ex) {
-            
+            Logger.getLogger(Comedor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void pedirComida() {
+    public void tomarPedidoBebida() {
         try {
-            this.cocinero.release();
-            System.out.println("Solicitando comida");
+            this.pedidoBebida.acquire();
+            System.out.println("Mozo toma pedido");
         } catch (InterruptedException ex) {
-
+            Logger.getLogger(Comedor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void irse() {
-        this.mesa.release();
+    public void entregarBebida() {
+        System.out.println("Bebida entregada a");
+        this.beber.release();
+        this.mozo.release();
     }
 
-    public void cocinar() {
-
-    }
-
-    public void tomarPedidoMozo() {
+    public void beber() {
         try {
-            this.pedido.acquire();
-            System.out.println("MOZO TOMA PEDIDO");
-            this.pedido.release();
+            this.beber.acquire();
         } catch (InterruptedException ex) {
+            Logger.getLogger(Comedor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void entregarPedido(){
-        
+
+    public void irse(String n) {
+        System.out.println(n+" SE VA");
+        this.asientos.release();
     }
 }

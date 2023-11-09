@@ -14,8 +14,23 @@ public class Main {
 
     public static void main(String[] args) {
         Random n = new Random();
-        while (true) {
-            System.out.println("Numeros entre " + n.nextInt(2));
+        int cantEmpleado = 10;
+        Comedor m = new Comedor();
+        Cocinero cocinero = new Cocinero(m);
+        Empleado empleado[] = new Empleado[cantEmpleado];
+        Mozo mozo = new Mozo(m);
+
+        for (int i = 0; i < cantEmpleado; i++) {
+            empleado[i] = new Empleado(m, "EMPLEADO " + i);
+        }
+        Thread chef = new Thread(cocinero);
+        Thread camarero = new Thread(mozo);
+        camarero.start();
+        chef.start();
+        Thread empleados[] = new Thread[cantEmpleado];
+        for (int i = 0; i < cantEmpleado; i++) {
+            empleados[i] = new Thread(empleado[i]);
+            empleados[i].start();
         }
     }
 }
