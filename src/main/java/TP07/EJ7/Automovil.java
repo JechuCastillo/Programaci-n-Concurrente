@@ -13,9 +13,8 @@ public class Automovil implements Runnable {
     private Ferry ferry;
     private int espacioQueOcupa;
 
-    public Automovil(Ferry ferry, int espacio) {
+    public Automovil(Ferry ferry) {
         this.ferry = ferry;
-        this.espacioQueOcupa = espacio;
     }
 
     public void run() {

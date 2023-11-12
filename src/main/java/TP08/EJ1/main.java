@@ -4,6 +4,8 @@
  */
 package TP08.EJ1;
 
+import java.util.Random;
+
 /**
  *
  * @author jesus
@@ -16,8 +18,9 @@ public class main {
         Persona p[] = new Persona[cantPersonas];
         MedidorTemperatura medidor = new MedidorTemperatura(sala);
         Thread medidorTemperatura = new Thread(medidor);
+        Random n = new Random();
         for (int i = 0; i < cantPersonas; i++) {
-            p[i] = new Persona("Persona " + i, sala, i + 30);
+            p[i] = new Persona("Persona " + i, sala,n.nextInt(90));
         }
         Thread persona[] = new Thread[cantPersonas];
         for (int i = 0; i < cantPersonas; i++) {

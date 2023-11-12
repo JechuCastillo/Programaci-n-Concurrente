@@ -13,8 +13,10 @@ public class ControladorFerry implements Runnable {
     private Ferry ferry;
 
     public void run() {
-        this.ferry.iniciarRecorrido();
-        this.ferry.finalizarRecorrido();
+        while (true) {
+            this.ferry.iniciarRecorrido();
+            this.ferry.finalizarRecorrido();
+        }
     }
 
 }

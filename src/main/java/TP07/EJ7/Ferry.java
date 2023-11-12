@@ -18,24 +18,25 @@ public class Ferry {
     private int capacidadAutomoviles;
     private int autosABordo;
     private int pasajerosABordo;
-    private boolean autosListo = false;
-    private boolean pasajeroListo = false;
-    private boolean recorrido = false;
-    private int cantAutos;
-    private int cantPasajeros;
+    private boolean pasajerosLleno = false;
+    private boolean autosLleno = false;
+    private boolean enRecorrido = false;
 
-    public Ferry(int capacidadPasajeros, int capacidadAutomoviles, int cantAutos, int cantPasajeros) {
+    public Ferry(int capacidadPasajeros, int capacidadAutomoviles) {
         this.capacidadAutomoviles = capacidadAutomoviles;
         this.capacidadPasajeros = capacidadPasajeros;
         this.autosABordo = 0;
         this.pasajerosABordo = 0;
-        this.cantAutos = cantAutos;
-        this.cantPasajeros = cantPasajeros;
     }
 
     public synchronized void subirAutomovil() {
+        // Si el ferry se llena deben esperar
         while (this.autosABordo >= this.capacidadAutomoviles) {
-            System.out.println("El ferry ya no posee capacidad");
+            if (this.enRecorrido) {
+                System.out.println("Ferry aun no ha llegado, espere por favor");
+            } else {
+                System.out.println("El ferry ya no posee capacidad");
+            }
             try {
                 this.wait();
             } catch (InterruptedException ex) {
@@ -44,16 +45,19 @@ public class Ferry {
         }
         this.autosABordo++;
         System.out.println("Automovil sube a bordo del ferry, autos a bordo: " + this.autosABordo);
-        if (this.autosABordo == this.capacidadAutomoviles || this.cantAutos == 0) {
-            this.autosListo = true;
-            this.recorrido = this.autosListo && this.pasajeroListo;
+        if (this.pasajerosABordo >= this.capacidadPasajeros && this.autosABordo >= this.capacidadAutomoviles) {
+            this.enRecorrido = true;
             this.notifyAll();
         }
     }
 
     public synchronized void subirPasajero() {
-        while (this.pasajerosABordo >= this.capacidadPasajeros) {
-            System.out.println("Limite de pasajeros alcanzado, por favor espera la siguiente vuelta");
+        while (this.pasajerosABordo >= this.capacidadPasajeros || this.enRecorrido) {
+            if (this.enRecorrido) {
+                System.out.println("Ferry aun no ha llegado, espere por favor");
+            } else {
+                System.out.println("El ferry ya no posee capacidad");
+            }
             try {
                 wait();
             } catch (InterruptedException ex) {
@@ -62,16 +66,15 @@ public class Ferry {
         }
         this.pasajerosABordo++;
         System.out.println("Pasajero sube a bordo del ferry, pasajeros a bordo: " + this.pasajerosABordo);
-        if (this.pasajerosABordo == this.capacidadPasajeros) {
-            this.pasajeroListo = true;
-            this.recorrido = this.autosListo && this.pasajeroListo;
+        if (this.pasajerosABordo >= this.capacidadPasajeros && this.autosABordo >= this.capacidadAutomoviles) {
+            this.enRecorrido = true;
             this.notifyAll();
         }
     }
 
     public synchronized void bajarPasajero() {
-        while (this.recorrido) {
-            System.out.println("Ferry en movimiento, espere llegada al destino");
+        while (this.enRecorrido) {
+            System.out.println("Espere llegada al destino");
             try {
                 wait();
             } catch (InterruptedException ex) {
@@ -83,8 +86,8 @@ public class Ferry {
     }
 
     public synchronized void bajarAuto() {
-        while (this.recorrido) {
-            System.out.println("Ferry en movimiento, espere llegada al destino");
+        while (this.enRecorrido) {
+            System.out.println("espere llegada al destino");
             try {
                 wait();
             } catch (InterruptedException ex) {
@@ -97,7 +100,7 @@ public class Ferry {
     }
 
     public synchronized void iniciarRecorrido() {
-        while (!this.recorrido) {
+        while (!this.enRecorrido) {
             System.out.println("Aun no estan listos");
             try {
                 wait();
@@ -111,8 +114,12 @@ public class Ferry {
         } catch (InterruptedException ex) {
             Logger.getLogger(Ferry.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("Recorrido finalizado, pueden bajarse");
     }
 
-    
+    public synchronized void finalizarRecorrido() {
+        this.enRecorrido = false;
+        this.notifyAll();
+    }
 
 }

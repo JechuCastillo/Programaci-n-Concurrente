@@ -7,6 +7,8 @@ package TP08.EJ1;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -42,7 +44,6 @@ public class GestorSala {
             this.personasEnSala++;
             this.personasQuePasaron++;
             System.out.println("Personas en sala: " + this.personasEnSala);
-            System.out.println("Personas que pasaron: " + this.personasQuePasaron);
         } catch (InterruptedException e) {
         } finally {
             this.entrada.unlock();
@@ -53,12 +54,25 @@ public class GestorSala {
         this.entrada.lock();
         System.out.println("Una persona sale del museo");
         this.personasEnSala--;
-        System.out.println("Personas en sala: " + this.personasEnSala);
-        this.hayLugar.signal();
+        System.out.println("Personas que pasaron: " + this.personasQuePasaron);
+        this.esJubilado.signalAll();
+        this.hayLugar.signalAll();
         this.entrada.unlock();
     }
 
     public void entrarSalaJubilado() {
+        this.entrada.lock();
+        try {
+            while (this.personasEnSala >= this.maxPermitido) {
+                esJubilado.await();
+            }
+            this.personasEnSala++;
+            System.out.println("Un Jubilado entra en la salada, personas en sala"+ this.personasEnSala);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GestorSala.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            this.entrada.unlock();
+        }
     }
 
     public void notificarTemperatura(int temperatura) {
