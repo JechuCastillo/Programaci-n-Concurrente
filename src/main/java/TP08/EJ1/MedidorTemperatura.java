@@ -24,8 +24,10 @@ public class MedidorTemperatura implements Runnable {
 
     public void run() {
         while (true) {
-            this.temperatura = n.nextInt(2) + 30;
-            this.sala.notificarTemperatura(this.temperatura);
+            this.temperatura = n.nextInt(30) + 15;
+            if (this.temperatura > 30) {
+                this.sala.notificarTemperatura(this.temperatura);
+            }
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException ex) {
